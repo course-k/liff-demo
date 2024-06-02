@@ -3,18 +3,20 @@ import { useEffect, useState } from "react";
 
 function App() {
   const [userName, setUserName] = useState("名無し");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
     liff
-      .init({ liffId: import.meta.env.VITE_LIFF_ID })
+      .init({
+        liffId: import.meta.env.VITE_LIFF_ID,
+        withLoginOnExternalBrowser: true,
+      })
       .then(() => {
         console.log("init");
-        console.log(liff);
+        setIsLoggedIn(liff.isLoggedIn());
         liff
           .getProfile()
           .then((profile) => {
             console.log("get profile");
-            console.log(liff);
-            console.log(profile);
             setUserName(profile.displayName);
           })
           .catch(() => {
@@ -28,7 +30,7 @@ function App() {
 
   return (
     <>
-      <h1>こんにちは、{userName}さん</h1>
+      <h1>{isLoggedIn ? `こんにちは、${userName}さん` : "Loading..."}</h1>
     </>
   );
 }
