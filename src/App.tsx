@@ -12,11 +12,11 @@ function App() {
       })
       .then(() => {
         console.log("init");
-        setIsLoggedIn(liff.isLoggedIn());
         liff
           .getProfile()
           .then((profile) => {
             console.log("get profile");
+            setIsLoggedIn(liff.isLoggedIn());
             setUserName(profile.displayName);
           })
           .catch(() => {
