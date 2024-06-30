@@ -1,34 +1,62 @@
-import liff from "@line/liff";
+import liff, { Liff } from "@line/liff";
 import { useEffect, useState } from "react";
 
-function App() {
-  const [userName, setUserName] = useState("名無し");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+const App = () => {
+  const [message, setMessage] = useState("");
+  const [liffObject, setLiffObject] = useState<Liff>();
+
   useEffect(() => {
-    liff
-      .init({
-        liffId: import.meta.env.VITE_LIFF_ID,
-        withLoginOnExternalBrowser: true,
-      })
-      .then(() => {
-        console.log("init");
-        liff
-          .getProfile()
-          .then((profile) => {
-            console.log("get profile");
-            setIsLoggedIn(liff.isLoggedIn());
-            setUserName(profile.displayName);
-          })
-          .catch(() => {
-            console.log("get profile failed");
-          });
-      })
-      .catch(() => {
-        console.log("init failed");
-      });
+    initializeLiff();
   }, []);
 
-  return <h1>{isLoggedIn ? `こんにちは、${userName}さん` : "Loading..."}</h1>;
-}
+  // liffの初期化
+  const initializeLiff = async () => {
+    try {
+      await liff.init({
+        liffId: import.meta.env.VITE_LIFF_ID,
+        withLoginOnExternalBrowser: true,
+      });
+      setLiffObject(liff);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // シェアターゲットピッカーによるメッセージシェア
+  const shareMessage = async () => {
+    if (!liffObject) {
+      console.log("LIFF is not initialized");
+      return;
+    }
+
+    try {
+      await liffObject.shareTargetPicker([
+        {
+          type: "text",
+          text: message,
+        },
+      ]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  if (!liffObject) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div>
+      <h1>シェアターゲットピッカー デモ</h1>
+      <input
+        type="text"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        placeholder="メッセージを入力してください"
+      />
+      <button onClick={shareMessage}>メッセージをシェアする</button>
+    </div>
+  );
+};
 
 export default App;
