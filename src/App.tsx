@@ -33,6 +33,7 @@ function App() {
     }
   };
 
+  // メッセージ追加処理
   const addMessage = () => {
     if (currentMessage) {
       setMessages([
@@ -43,6 +44,7 @@ function App() {
     }
   };
 
+  // シェアターゲットピッカーによるメッセージシェア
   const shareMessages = async () => {
     if (!liffObject) {
       alert("LIFF is not initialized");
@@ -70,34 +72,36 @@ function App() {
     }
   };
 
+  // エラー表示
   if (liffError) {
     return <div>Error: {liffError}</div>;
   }
 
+  // 初期化待ち表示
   if (!liffObject) {
     return <div>Loading...</div>;
   }
 
   return (
     <div>
-      <h1>LIFF Share Target Picker Demo</h1>
+      <h1>シェアターゲットピッカー デモ</h1>
       <div>
         <select
           value={currentType}
           onChange={(e) => setCurrentType(e.target.value as MessageType)}
         >
-          <option value="text">Text</option>
-          <option value="image">Image</option>
+          <option value="text">テキスト</option>
+          <option value="image">画像</option>
         </select>
         <input
           type="text"
           value={currentMessage}
           onChange={(e) => setCurrentMessage(e.target.value)}
           placeholder={
-            currentType === "text" ? "Enter message" : "Enter image URL"
+            currentType === "text" ? "メッセージを入力" : "画像URLを入力"
           }
         />
-        <button onClick={addMessage}>Add Message</button>
+        <button onClick={addMessage}>メッセージを追加</button>
       </div>
       <ul>
         {messages.map((msg, index) => (
@@ -106,7 +110,7 @@ function App() {
           </li>
         ))}
       </ul>
-      <button onClick={shareMessages}>Share Messages</button>
+      <button onClick={shareMessages}>メッセージをシェア</button>
     </div>
   );
 }
