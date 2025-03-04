@@ -111,6 +111,9 @@ function App() {
         ))}
       </ul>
       <button onClick={shareMessages}>メッセージをシェア</button>
+      <div>
+        <button onClick={()=>{liff.logout()}}>ログアウト</button>
+      </div>
     </div>
   );
 }
