@@ -16,6 +16,7 @@ function App() {
   const [liffObject, setLiffObject] = useState<Liff | null>(null);
   const [liffError, setLiffError] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [queryResult, setQueryResult] = useState("");
 
   useEffect(() => {
     initializeLiff();
@@ -112,6 +113,22 @@ function App() {
     }
   };
 
+  const handlePermissionQuery = async () => {
+    if (!liffObject || !isLoggedIn) {
+      alert("LINEにログインしていません。");
+      return;
+    }
+
+    try {
+      const permission = await liffObject.permission.query("profile");
+      setQueryResult(JSON.stringify(permission, null, 2));
+    } catch (error) {
+      setQueryResult(
+        `エラー: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+  };
+
   // エラー表示
   if (liffError) {
     return <div>Error: {liffError}</div>;
@@ -157,6 +174,10 @@ function App() {
           <button onClick={shareMessages}>メッセージをシェア</button>
           <div>
             <button onClick={handleLogout}>ログアウト</button>
+          </div>
+          <div>
+            <button onClick={handlePermissionQuery}>クエリ</button>
+            <div>{queryResult}</div>
           </div>
         </>
       ) : (
