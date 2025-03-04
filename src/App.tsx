@@ -17,6 +17,7 @@ function App() {
   const [liffError, setLiffError] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [queryResult, setQueryResult] = useState("");
+  const [requestAllResult, setRequestAllResult] = useState("");
 
   useEffect(() => {
     initializeLiff();
@@ -129,6 +130,22 @@ function App() {
     }
   };
 
+  const handleRequestAll = async () => {
+    if (!liffObject || !isLoggedIn) {
+      alert("LINEにログインしていません。");
+      return;
+    }
+
+    try {
+      const result = await liffObject.permission.requestAll();
+      setRequestAllResult(JSON.stringify(result, null, 2));
+    } catch (error) {
+      setRequestAllResult(
+        `エラー: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+  };
+
   // エラー表示
   if (liffError) {
     return <div>Error: {liffError}</div>;
@@ -178,6 +195,10 @@ function App() {
           <div>
             <button onClick={handlePermissionQuery}>クエリ</button>
             <div>{queryResult}</div>
+          </div>
+          <div>
+            <button onClick={handleRequestAll}>すべての権限をリクエスト</button>
+            <div>{requestAllResult}</div>
           </div>
         </>
       ) : (
